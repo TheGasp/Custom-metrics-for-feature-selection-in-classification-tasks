@@ -1,0 +1,55 @@
+# Custom metrics for feature selection in classification tasks
+
+The goal of this exercise is to evaluate different **feature selection** techniques applied to a **synthetically generated dataset**. We compare selection performance using multiple metrics and analyze their impact on classification results.
+
+
+## 🔧 Dataset Generation
+
+The dataset is generated using `make_classification` from `scikit-learn` with the following parameters:
+
+- **Task:** Balanced binary classification  
+- **Number of samples:** 1000  
+- **Number of features:** 30  
+  - Informative features: 5  
+  - Redundant features (linear combinations): 5  
+  - Repeated features (duplicates): 2  
+- **Label noise:** 5%
+
+
+## 📊 Feature Selection Metrics
+
+Several custom metrics are used to evaluate the quality of selected features:
+- **Suc**
+![Suc Formula](https://private-user-images.githubusercontent.com/101390415/465747319-f0ab1e1a-65df-4997-b42e-d52610802ed8.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTI0MTk5ODUsIm5iZiI6MTc1MjQxOTY4NSwicGF0aCI6Ii8xMDEzOTA0MTUvNDY1NzQ3MzE5LWYwYWIxZTFhLTY1ZGYtNDk5Ny1iNDJlLWQ1MjYxMDgwMmVkOC5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwNzEzJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDcxM1QxNTE0NDVaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1kMTlhNThhNzA2MzFiMjVhYTFlNWYyY2RhN2QxODRmOWJjMDk5N2EwY2E1Y2QzZjAwNjYwZDQzOWYzODI4NTgxJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.1STqnQgQqYh2jE8MUiGcGdpLUw6Fapp0YsfWC5cD24c)
+
+- **Soft Score**  
+![Soft Formula](https://private-user-images.githubusercontent.com/101390415/465747320-ea432d38-b534-4e8e-9bd3-28e9ea753813.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTI0MTk5ODUsIm5iZiI6MTc1MjQxOTY4NSwicGF0aCI6Ii8xMDEzOTA0MTUvNDY1NzQ3MzIwLWVhNDMyZDM4LWI1MzQtNGU4ZS05YmQzLTI4ZTllYTc1MzgxMy5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwNzEzJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDcxM1QxNTE0NDVaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1iNTZmODViOWVjMWRjZDk5NmE2YWQ2MmM2YTIyZDQ5ZTZiYWQ4NGNkYjg4OTIxY2JkMmRhZWMyNjZlYzI2NjYzJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.aoJQeIMOKxU8mtrb6z9a-U6IijNgG7YJvgiMGm7b9PY)
+
+- **F1-like Score** (F1-inspired, adapted to feature selection)
+![F1 Formula](https://private-user-images.githubusercontent.com/101390415/465747318-2a4fa290-b353-41d1-92d5-fc05bc4f5073.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTI0MTk5ODUsIm5iZiI6MTc1MjQxOTY4NSwicGF0aCI6Ii8xMDEzOTA0MTUvNDY1NzQ3MzE4LTJhNGZhMjkwLWIzNTMtNDFkMS05MmQ1LWZjMDViYzRmNTA3My5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwNzEzJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDcxM1QxNTE0NDVaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT03MGZiMmM4NDBjOWJmNjE0ODg5NmVlYWVkODYyOWMxNTZiODY1NmE4OTMwMmY0ODRmNzFkNzc1YmI4Mjg4ODFjJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.jVOZJb4uWzpQ4K1w9dHh9Q1HHqa7BTnIT1-L7wpG98k)
+
+
+## 🧠 Feature Selection Methods
+
+Three major types of feature selection are explored:
+
+- Mutual Information (**Filter method**)
+- Recursive Feature Elimination - RFE (**Wrapper method**)
+- Feature importance from Random Forest (**Embedded method**)
+
+Here are the performances of the different feature selection methods across the various metrics:
+
+![Evaluate Metrics](https://private-user-images.githubusercontent.com/101390415/465752326-f5c4f2ef-9ff6-4ef2-af7c-f8dcb47a75f8.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTI0MjEzNDksIm5iZiI6MTc1MjQyMTA0OSwicGF0aCI6Ii8xMDEzOTA0MTUvNDY1NzUyMzI2LWY1YzRmMmVmLTlmZjYtNGVmMi1hZjdjLWY4ZGNiNDdhNzVmOC5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwNzEzJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDcxM1QxNTM3MjlaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1hMTRlZDJkMDZkODAxNGI5M2VkNGUwYjkwNjkxMGRlYzQ0ZDgzMmUxMzcyNzdkNDQ3YjU5OGEzNDQ1NTI1ODRjJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.vyUMQzca42tU5yoriIwaA5G3TdAJL66TW2O5KPst4tg)
+
+## 📈 Classification Evaluation
+
+Classification performance is evaluated after applying feature selection. Results are averaged over **5 independently generated datasets**.
+
+![Evaluate Metrics](https://private-user-images.githubusercontent.com/101390415/465753328-19077133-55d6-4772-8df9-8bed43659ace.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTI0MjE2NDYsIm5iZiI6MTc1MjQyMTM0NiwicGF0aCI6Ii8xMDEzOTA0MTUvNDY1NzUzMzI4LTE5MDc3MTMzLTU1ZDYtNDc3Mi04ZGY5LThiZWQ0MzY1OWFjZS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwNzEzJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDcxM1QxNTQyMjZaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT01OTM1OTQyZjY2MzIxYzU1ZTc0YmRmZTZjZWMxZGRlOTcxNmM0NmM4YWE4NjU3NGQwN2E5YTBkZTRkZDgxNTBhJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.6Lw5ATPRvKtHi5quXrAHW4NY8FnIQ7-oufs-RqkRcY0)
+
+We can clearly see that selecting relevant features leads to improved performance. The best results are achieved using RFE.
+
+
+
+
+

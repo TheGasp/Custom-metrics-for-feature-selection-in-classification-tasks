@@ -1,6 +1,6 @@
 # Custom metrics for feature selection in classification tasks
 
-The goal of this exercise is to evaluate different **feature selection** techniques applied to a **synthetically generated dataset**. We compare selection performance using multiple metrics and analyze their impact on classification results.
+The goal of this project is to evaluate different **feature selection** techniques applied to a **synthetically generated dataset**. We compare selection performance using multiple metrics and analyze their impact on classification results.
 
 
 ## 🔧 Dataset Generation
